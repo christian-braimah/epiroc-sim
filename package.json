@@ -11,7 +11,8 @@
     "@supabase/supabase-js": "latest",
     "next": "latest",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-gauge-component": "^2.0.26"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

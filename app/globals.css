@@ -2,7 +2,85 @@
 @tailwind components;
 @tailwind utilities;
 
+
 body{
     background-color: #000;
     color: #fff;
+    font-family: 'Gabarito', sans-serif;
+}
+
+.top-row{
+    background-color: #151515;
+    padding: 0.1rem;
+
+}
+
+.middle-row{
+    background-color: #151515;
+    padding: 0.1rem;
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+.middle-row__left{
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.1rem;
+}
+.bottom-row{
+    background-color: #151515;
+    padding: 0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.bottom-row__left{
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.1rem;
+}
+
+.btn{
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn.btn-top{
+   background-color: #151515;
+   min-width: 105.29px;
+   aspect-ratio: 1 / 1;
+   cursor:default;
+}
+
+.btn.btn-bottom, .btn.btn-middle{
+    display: flex;
+    flex-flow:column wrap;
+    padding: 2rem;
+    aspect-ratio: 1.15 / 1;
+    justify-content: center;
+    align-items: center;
+    gap: 10.71px;
+    border-radius: 6.426px;
+border: 1.071px solid #2F2F2F;
+background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64%);
+    
+}
+
+
+.gauge-section{
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    padding: 0.1rem;
+
+    @media (max-width: 768px) {
+        flex-flow: column wrap;
+        height: auto;
+    }
 }
