@@ -12,6 +12,7 @@ body{
 .top-row{
     background-color: #151515;
     padding: 0.1rem;
+    flex-flow: row wrap;
 
 }
 
@@ -19,8 +20,8 @@ body{
     background-color: #151515;
     padding: 0.1rem;
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-between;
-    height: 100%;
 }
 .middle-row__left{
     display: flex;
@@ -33,7 +34,6 @@ body{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
 }
 
 .bottom-row__left{
@@ -58,7 +58,7 @@ body{
 
 .btn.btn-bottom, .btn.btn-middle{
     display: flex;
-    flex-flow:column wrap;
+   flex-direction: column;
     padding: 2rem;
     aspect-ratio: 1.15 / 1;
     justify-content: center;
@@ -70,7 +70,20 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     
 }
 
+.btn.btn-middle{
+    padding: 1rem;
+}
 
+.middle-row__value{
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #DDDDDD;
+}
+.middle-row__unit{
+    font-size: 1rem;
+    font-weight: 900;
+    color: #DDDDDD;
+}
 .gauge-section{
     height: 50vh;
     display: flex;
