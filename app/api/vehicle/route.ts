@@ -1,14 +1,20 @@
+// Fetch all vehicle data from the database
+
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
-    return NextResponse.json({ message: "Get Vehicle API" });
-}
+    const supabase = await createClient();
+    const { data, error } = await supabase
+    .from('vehicle')
+    .select('*')
+    .eq('id', 4)
+    .single();
 
-export async function POST(request: NextRequest) {
-    return NextResponse.json({ message: "Post Vehicle API" });
-}
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
-export async function PATCH(request: NextRequest) {
-    return NextResponse.json({ message: "Patch Vehicle API" });
+    return NextResponse.json(data);
 }
 
