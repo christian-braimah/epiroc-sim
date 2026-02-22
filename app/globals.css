@@ -20,13 +20,11 @@ body{
     background-color: #151515;
     padding: 0.1rem;
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
 }
 .middle-row__left{
     display: flex;
     gap: 0.5rem;
-    padding: 0.1rem;
+    padding: 0.2rem;
 }
 .bottom-row{
     background-color: #151515;
@@ -84,6 +82,94 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     font-weight: 900;
     color: #DDDDDD;
 }
+.middle-row__right{
+    display: flex;
+    flex-flow: column wrap;
+    gap: 0.5rem;
+    padding: 0.1rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    h2{
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #DDDDDD;
+        text-transform: uppercase;
+    }
+}
+/* Motor Speed Setting — native range slider styled for dark theme */
+.motor-speed-settings{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 600px;
+    padding: 1rem;
+}
+
+/* Range input — track styling */
+.motor-speed-slider{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #555;
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Thumb — WebKit (Chrome, Safari, Edge) */
+.motor-speed-slider::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    background: #1A1A1A;
+    border: 2px solid #888;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Thumb — Firefox */
+.motor-speed-slider::-moz-range-thumb{
+    width: 28px;
+    height: 28px;
+    background: #1A1A1A;
+    border: 2px solid #888;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.motor-speed-labels{
+    display: flex;
+    justify-content: space-between;
+}
+
+.motor-speed-label{
+    flex: 1;
+    padding: 0.3rem 0;
+    background: transparent;
+    color: #888;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.2s ease;
+}
+
+.motor-speed-label:hover{
+    color: #DDDDDD;
+}
+
+.motor-speed-label--active{
+    color: #fff;
+}
+
 .gauge-section{
     height: 50vh;
     display: flex;

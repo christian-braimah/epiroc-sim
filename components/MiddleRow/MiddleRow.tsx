@@ -2,6 +2,7 @@ import GearRatio from "./middleRowIcons/gearRatio";
 import BatteryPercentage from "./middleRowIcons/batteryPercentage";
 import BatteryTemperature from "@/components/MiddleRow/middleRowIcons/batteryTemperature";
 import MotorStatus from "@/components/TopRow/topRowIcons/motorStatus";
+import MotorSpeedSetting from "./MotorSpeedSetting";
 
 let defaultColor = "#DDDDDD";
 let middleRowIcons = [
@@ -50,8 +51,10 @@ export default function MiddleRow() {
                 ))}
 
             </div>
+            {/* Motor Speed Settings — interactive speed selector (OFF through 4) */}
             <div className="middle-row__right">
-                
+                <h2>Motor Speed Setting</h2>
+                <MotorSpeedSetting />
             </div>
         </section>
     );
