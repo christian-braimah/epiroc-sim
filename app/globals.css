@@ -67,7 +67,10 @@ border: 1.071px solid #2F2F2F;
 background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64%);
     
 }
+.btn.btn-bottom.middle{
+    background: linear-gradient(180deg, #363636 0.41%, #272727 59.09%, #272727 99.64%), #333;
 
+}
 .btn.btn-middle{
     padding: 1rem;
 }
@@ -98,6 +101,7 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
         text-transform: uppercase;
     }
 }
+
 /* Motor Speed Setting — native range slider styled for dark theme */
 .motor-speed-settings{
     display: flex;

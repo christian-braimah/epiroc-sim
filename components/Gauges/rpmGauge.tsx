@@ -1,19 +1,19 @@
 "use client";
-import {useState, useEffect} from "react";
+
+import { useVehicle } from "@/lib/VehicleContext";
 import GaugeComponent from "react-gauge-component";
 
+// RPMGauge displays the motor RPM (0 to 1000).
+// The value now comes from the database via VehicleContext instead of cycling locally.
 export default function RPMGauge() {
- const [value, setValue] = useState(0);
-  useEffect(() => {
-    const values = [0, 100,200,300,400,500,600,700,800,900,1000];
-    let i = 0;
+  const { vehicleState } = useVehicle();
+  const value = vehicleState?.motor_rpm ?? 0;
 
-    const interval = setInterval(() => {
-      i = (i + 1) % values.length;
-      setValue(values[i]);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+
+// Range Colors (thresholds must be in 0-100 gauge scale, not raw RPM)
+  const extrmeRangeColor = "#FF0000";
+  const safeRangeColor = "#00FF00";
+  const defaultRangeColor = "#dddddd";
 
   return (
     <div className="flex flex-col gap-2">
@@ -27,6 +27,11 @@ export default function RPMGauge() {
             width: 0.1,
             padding: 0,
             emptyColor: "#3a3a40",
+            subArcs: [
+              { limit: 25, color: defaultRangeColor },
+              { limit: 87.5, color: safeRangeColor },
+              { limit: 100, color: extrmeRangeColor },
+            ],
           }}
           pointer={{
             type: "needle",
@@ -49,19 +54,16 @@ export default function RPMGauge() {
             tickLabels: {
               type: "inner",
               hideMinMax: true,
-              ticks:[
+              ticks: [
                 { value: 0, valueConfig: { formatTextValue: () => "0" } },
-                { value: 10, valueConfig: { formatTextValue: () => "10" } },
-                { value: 20, valueConfig: { formatTextValue: () => "20" } },
-                { value: 30, valueConfig: { formatTextValue: () => "30" } },
-                { value: 40, valueConfig: { formatTextValue: () => "40" } },
-                { value: 50, valueConfig: { formatTextValue: () => "50" } },
-                { value: 60, valueConfig: { formatTextValue: () => "60" } },
-                { value: 70, valueConfig: { formatTextValue: () => "70" } },
-                { value: 80, valueConfig: { formatTextValue: () => "80" } },
-                { value: 90, valueConfig: { formatTextValue: () => "90" } },
-                { value: 100, valueConfig: { formatTextValue: () => "100" } },
-                
+                { value: 12.5, valueConfig: { formatTextValue: () => "100" } },
+                { value: 25, valueConfig: { formatTextValue: () => "200" } },
+                { value: 37.5, valueConfig: { formatTextValue: () => "300" } },
+                { value: 50, valueConfig: { formatTextValue: () => "400" } },
+                { value: 62.5, valueConfig: { formatTextValue: () => "500" } },
+                { value: 75, valueConfig: { formatTextValue: () => "600" } },
+                { value: 87.5, valueConfig: { formatTextValue: () => "700" } },
+                { value: 100, valueConfig: { formatTextValue: () => "800" } }
               ],
               defaultTickValueConfig: {
                 style: {
@@ -83,9 +85,9 @@ export default function RPMGauge() {
       {/* Unit label */}
       <div
         style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           color: "#888890",
           fontSize: 24,
           marginTop: -60,
@@ -94,7 +96,6 @@ export default function RPMGauge() {
       >
         RPM
       </div>
-
     </div>
-  )
+  );
 }
