@@ -8,8 +8,7 @@ import ParkingBrake from "./topRowIcons/parkingBrake";
 
 // Setting up colors for icons
 const defaultColor = "#DDDDDD";  
-const warningColor = "#FF4444";   
-const successColor = "#00FF00";
+const warningColor = "#FF0000";   
 
 export default function TopRow() {
     const { vehicleState } = useVehicle();
@@ -29,7 +28,7 @@ export default function TopRow() {
         {
              id: 3,
             name: "Motor Status",
-            icon: <MotorStatus color={vehicleState?.motor_status ? successColor : defaultColor} />
+            icon: <MotorStatus color={vehicleState?.motor_status ? warningColor : defaultColor} />
             
         },
         {

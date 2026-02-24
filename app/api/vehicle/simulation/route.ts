@@ -74,13 +74,18 @@ const RPM_STEP = 66.67; // That is 800RPM / 12 seconds (3 secs per interval)
 const MECH_CONVERSION_FACTOR = 9550;
 const REGEN_FACTOR = 0.5; // For only 50% of the power to be used for charging
 
-const TOTAL_CHARGE_TIME = 120; // 2 minutes
-const CHARGE_RATE = 100; // 100% charge in 2 minutes
+const TOTAL_CHARGE_TIME = 60; // 1 minute
+const CHARGE_RATE = 100; // 100% charge in 1 minute
 let CHARGE_RATE_PER_SECOND = CHARGE_RATE / TOTAL_CHARGE_TIME;
 
-// Assuming that the vehicle discharges from 100% to 0% in 4 minutes (240 seconds)
+// Assuming that the vehicle discharges from 100% to 0% in 1 minute 
 // And the average power consumption is 500KW
-const DRAIN_CONSTANT = 0.00083; // (100%/240secs)/Average Power
+const DRAIN_CONSTANT = 0.001667; // (100%/60secs)/Average Power
+
+const HEAT_RATE = 0.000667;
+const COOL_RATE = 0.667;
+const MIN_TEMP = 20;
+const MAX_TEMP = 60;
 
 
 export async function GET(request: NextRequest) {
@@ -102,29 +107,26 @@ export async function POST(request: NextRequest){
     }
 
     // Declaring Fetched Data from
-    let motor_speed = data.motor_speed;
+    let motorSpeed = data.motor_speed;
     let isCharging = data.is_charging;
     let batteryLevel = data.battery_pct;
+    let batteryTemp = data.battery_temp;
+    let gearRatio = data.gear_ratio;
+
     let batteryLowStatus = data.battery_low;
     let parkingBrakeStatus = data.parking_brake;
+    let motorStatus = data.motor_status;
+    let checkEngineStatus = data.check_engine;
+
 
     // Turn off Motor when charging
-    if (isCharging === true ){
-        motor_speed = 0;
-    }else if(batteryLevel <= 0){
-        motor_speed = 0;
-    }
+    // if (isCharging === true ){
+    //     motorSpeed = 0;
+    // }
 
-    if(batteryLevel<=20){
-        batteryLowStatus = true;
-    }else if(batteryLevel<=0){
-        parkingBrakeStatus = true;
-    }else{
-        batteryLowStatus = false;
-    }
     
     // Calculate the targetRPM
-    const targetRPM = motor_speed * RPM_INTERVAL;
+    const targetRPM = motorSpeed * RPM_INTERVAL;
 
     // Calculate the newRPM
     let currentRPM = data.motor_rpm;
@@ -136,13 +138,14 @@ export async function POST(request: NextRequest){
     }
 
 
-    const isDecelerating = data.motor_rpm > targetRPM;
+    const isDecelerating = currentRPM < data.motor_rpm;
 
     let newPower: number;
 
     if (isDecelerating && currentRPM > 0) {
         // Regen braking: power goes negative (motor acts as generator)
         newPower = ((MAX_TORQUE * currentRPM) / MECH_CONVERSION_FACTOR) * - REGEN_FACTOR;
+
     } else {
         // Cruising or accelerating: positive power consumption
         newPower = (MAX_TORQUE * currentRPM) / MECH_CONVERSION_FACTOR;
@@ -156,20 +159,10 @@ export async function POST(request: NextRequest){
 
     if (isCharging){
         newBatteryLevel += CHARGE_RATE_PER_SECOND;
-    } else if (!isCharging && !isDecelerating){
-        newBatteryLevel -= DRAIN_CONSTANT * newPower;
-    }
-
-    // Calculate the charge rate
-   
-
-    let isDrain : boolean;
-
-    if (isDecelerating && currentRPM > 0){
-        isDrain = true;
     }else{
-        isDrain = false;
-    }
+        newBatteryLevel -= DRAIN_CONSTANT * newPower;
+    } 
+   
 
     // If the battery is charging, increase the battery level
     
@@ -181,9 +174,72 @@ export async function POST(request: NextRequest){
     }
 
     // If the battery is empty, turn off the motor
-    if (newBatteryLevel <= 0){
-        isCharging = false;
+    if (newBatteryLevel <= 0) {
         newBatteryLevel = 0;
+        currentRPM = 0;   
+        motorSpeed = 0;   
+        newPower = 0;     
+    }
+
+    if(newBatteryLevel <=0){
+        batteryLowStatus = true;
+        parkingBrakeStatus = true;
+    }else if(newBatteryLevel <=20){
+        batteryLowStatus = true;
+    }else{
+        batteryLowStatus = false;
+        parkingBrakeStatus = false;
+    }
+
+    if (currentRPM >= 700){
+        motorStatus = true;
+    }else{
+        motorStatus = false;
+    }
+
+    // Battery Temperature
+    let newBatteryTemp = batteryTemp;
+    let absolutePower = Math.abs(newPower);
+    
+    if(absolutePower>0){
+        newBatteryTemp = newBatteryTemp + (absolutePower * HEAT_RATE);
+    }else{
+        newBatteryTemp -= COOL_RATE;
+    }
+
+    if(newBatteryTemp >= 50){
+        checkEngineStatus = true;
+    }else{
+        checkEngineStatus = false;
+    }
+
+    // Creating Boundries for Temperature
+    newBatteryTemp = Math.max(MIN_TEMP, Math.min(MAX_TEMP, newBatteryTemp));
+
+
+
+
+    
+
+
+    // Check engine triggers at critical temp
+    // if (newBatteryTemp >= 55) {
+    //     checkEngineStatus = true;
+    // } else {
+    //     checkEngineStatus = false;
+    // }
+
+    // Gear Ratio
+    if (motorSpeed === 0){
+        gearRatio = "N/N";
+    }else if (motorSpeed === 1){
+        gearRatio = "4/1";
+    }else if (motorSpeed === 2){
+        gearRatio = "3/1";
+    }else if (motorSpeed === 3){
+        gearRatio = "2/1";
+    }else if (motorSpeed === 4){
+        gearRatio = "1/1";
     }
 
     // Calculating the equivalent Power
@@ -201,11 +257,15 @@ export async function POST(request: NextRequest){
     .update({
         power_kw: newPower,
         motor_rpm: newRPM,
-        motor_speed: motor_speed,
+        motor_speed: motorSpeed,
+        gear_ratio: gearRatio,
         is_charging: isCharging,
         battery_pct: newBatteryLevel,
         battery_low: batteryLowStatus,
         parking_brake: parkingBrakeStatus,
+        motor_status: motorStatus,
+        battery_temp: newBatteryTemp,
+        check_engine: checkEngineStatus,
     })
     .eq('id', 4)
     .single();
@@ -213,7 +273,7 @@ export async function POST(request: NextRequest){
     if(updateError){
         return NextResponse.json({ error: updateError.message }, { status: 500 });
     }else{
-        return NextResponse.json({ success: "Vehicle Simulation API" });
+        return NextResponse.json({ success: "Vehicle Simulation API - POST" });
     }
 
 }
