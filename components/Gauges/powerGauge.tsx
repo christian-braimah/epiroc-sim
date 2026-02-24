@@ -9,7 +9,7 @@ export default function PowerGauge() {
   const { vehicleState } = useVehicle();
   const value = vehicleState?.power_kw ?? 0;
 
-//   Color Ranges
+// Specifying Range Colors
   const extremeRangeColor = "#FF0000";
   const safeRangeColor = "#00FF00";
   const defaultRangeColor = "#dddddd";

@@ -3,14 +3,13 @@
 import { useVehicle } from "@/lib/VehicleContext";
 import GaugeComponent from "react-gauge-component";
 
-// RPMGauge displays the motor RPM (0 to 1000).
-// The value now comes from the database via VehicleContext instead of cycling locally.
+
 export default function RPMGauge() {
   const { vehicleState } = useVehicle();
   const value = vehicleState?.motor_rpm ?? 0;
 
 
-// Range Colors (thresholds must be in 0-100 gauge scale, not raw RPM)
+// Specifying Range Colors
   const extrmeRangeColor = "#FF0000";
   const safeRangeColor = "#00FF00";
   const defaultRangeColor = "#dddddd";
@@ -20,7 +19,7 @@ export default function RPMGauge() {
       <div className="gauge-section">
         <GaugeComponent
           type="radial"
-          value={(value + 1000) / 20}
+          value={(value /800)*100}
           minValue={0}
           maxValue={100}
           arc={{

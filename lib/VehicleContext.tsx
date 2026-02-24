@@ -47,10 +47,13 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Fetching vehicle state every second to update UI
+  // Also calls the simulation endpoint each tick to advance RPM, power, etc.
   useEffect(() => {
     fetchVehicleState();
 
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
+      // Run one simulation tick, then fetch the updated state
+      await fetch("/api/vehicle/simulation", { method: "POST" });
       fetchVehicleState();
     }, 1000);
 

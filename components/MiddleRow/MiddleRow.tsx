@@ -26,14 +26,14 @@ export default function MiddleRow() {
             id: 2,
             name: "Battery Percentage",
             icon: <BatteryPercentage color={defaultColor} />,
-            value: String(vehicleState?.battery_pct ?? 0),
+            value: String(vehicleState?.battery_pct.toFixed(2) ?? 0),
             unit: "%"
         },
         {
             id: 3,
             name: "Battery Temperature",
             icon: <BatteryTemperature color={defaultColor} />,
-            value: String(vehicleState?.battery_temp ?? 0),
+            value: String(vehicleState?.battery_temp.toFixed(2) ?? 0),
             unit: "°C"
         },
         {
