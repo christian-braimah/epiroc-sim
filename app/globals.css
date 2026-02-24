@@ -42,7 +42,6 @@ body{
 
 .btn{
     padding: 10px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +50,6 @@ body{
    background-color: #151515;
    min-width: 105.29px;
    aspect-ratio: 1 / 1;
-   cursor:default;
 }
 
 .btn.btn-bottom, .btn.btn-middle{

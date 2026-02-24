@@ -19,7 +19,7 @@ export default function RPMGauge() {
       <div className="gauge-section">
         <GaugeComponent
           type="radial"
-          value={(value /800)*100}
+          value={(value / 800) * 100} // 
           minValue={0}
           maxValue={100}
           arc={{

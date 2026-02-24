@@ -6,7 +6,6 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 export interface VehicleState {
   id: number;
   power_kw: number;
-  rpm: number;
   gear_ratio: string;
   battery_pct: number;
   battery_temp: number;
@@ -23,7 +22,7 @@ export interface VehicleState {
 interface VehicleContextValue {
   vehicleState: VehicleState | null; 
   setMotorSpeed: (speed: number) => Promise<void>;  // Update motor speed (0-4)
-  toggleCharging: () => Promise<void>;               // Toggle charging on/off
+  toggleCharging: () => Promise<void>; // Toggle charging on/off
 }
 
 // Create the context with null as default

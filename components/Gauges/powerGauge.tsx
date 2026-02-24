@@ -20,7 +20,7 @@ export default function PowerGauge() {
       <div className="gauge-section">
         <GaugeComponent
           type="radial"
-          value={(value + 1000) / 20}
+          value={(value + 1000) / 20} 
           minValue={0}
           maxValue={100}
           arc={{

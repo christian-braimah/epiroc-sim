@@ -2,68 +2,44 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 /*
-MOTOR SPEED & POWER OUTPUT
- Every Motor Speed has a corresponding Power Output and Speed
- OFF - 0RPM
- 1 - 200RPM
- 2 - 400RPM
- 3 - 600RPM
- 4 - 800RPM
+1. MOTOR
+    OFF - 0 RPM, 1 - 200 RPM, 2 - 400 RPM, 3 - 600 RPM, 4 - 800 RPM
 
- For deceleration, the corresponting power output is negative.
+    To prevent instant acceleration, RPM ramps gradually:
+        RPM Step = 800 RPM / 12 seconds = 66.67 RPM per tick
+        So 12s to max RPM. The same for deceleration.
 
- And that negative power output is what is used to charge the battery.
- Although very little amounts of power.
+2. POWER
+    Power = (Torque x RPM) / 9550
+    Where 9550 is the mechanical conversion factor (kW to Nm at RPM).
 
- To prevent instant acceleration, there will be a time delay in the motor speed. So that it gradually ramps up. 
- 
- BATTERY CHARGING 
- The higher the power the faster the battery drains. 
+    And max torque at 800 RPM is 11,937.5 Nm
+    Torque(Max) = (1000 x 9550) / 800 = 11,937.5 Nm
 
- So for a unit of time tick, the battery drains by a certain percentage.
- 
+    NEGATIVE POWER
+    This happens when decelerating. 50% of the power generated goes back into the battery.
 
-However, you can't run the motor when the battery is charging.
-So by default, when charge is toggled on, the motor speed is set to 0,  parking brake is engaged, and battery charging light turns on.
+    P(regen) = -0.5 x (Torque x RPM) / 9550
 
-SPEED  - NET CHARGE
-Total Charge Time = 4mins. 
-Charging Rate = 25% per minute.
+3. BATTERY DRAIN
+    Battery drains based on the power output. Assuming the battery drains in 1 minute at Max Power:
 
-The corresponding Battery temperature,
-assuming that ambient temperature is 20 degrees celsius. 
+    Battery Drain Per Tick = DRAIN_CONSTANT x Power
+    DRAIN_CONSTANT = (100% / 60s) / 1000kW = 0.001667
 
-What will the formulas be: 
+4. BATTERY CHARGING
+    When charging is active:
+    The motor is turned off, and it charges at the same rate in 1 minute.
 
-FORULAS TO BACK MY CLAIMS:
-Target RPM = Slider Setting x Interval (200);
+5. BATTERY TEMPERATURE
+    The base temperature is set at 20 degrees, and is proportional to the power output.
 
-It's Equivalent Power will be :
-To get an equivalent power of 1000KW from 800RPM, 
-Power = (Torque x RPM) / 9550
-Therefore the torque will be :
-Torque = (Power x 9550) / RPM
-Torque (Max) = (1000 x 9550) / 800
-Torque (Max) = 11937.5 Nm
+    It is assumed that the battery heats from 20 to 60 degrees in 1 minute to get the heat rate. 
 
-Therefore power for the lowest setting of 200rpm will be:
-P(min) = (11937.5 x 200) / 9550
-P(min) = 250KW
+    HEAT_RATE = 40 / (60s x 1000kW) = 0.000667
+    Temp(new) = Temp(current) + |Power| x HEAT_RATE
 
-Now, how do I make sure that the vehicle doesn't receive instant acceleration?
-
-I am thinking of adding a specific time of 3 sec per interval. So it takes 3 secs to reach 100RPM and 24 secs to reach 800RPM. That way we can also easily account for deceleration, and adding to the battery.
-
-
-Calculating battery temperature:
-
-
-
-
-References: 
-http://www.softstarter.org/soft-starter-torque-control-system-952138.html#:~:text=From%20the%20motor%20parameters%2C%20the,types%20of%20loads%20and%20applications.
-
-
+    Cooling has only been implemented when the motor is off, and cools to 20 degrees C in 1 minute. 
 
 */
 
@@ -120,9 +96,9 @@ export async function POST(request: NextRequest){
 
 
     // Turn off Motor when charging
-    // if (isCharging === true ){
-    //     motorSpeed = 0;
-    // }
+    if (isCharging === true ){
+        motorSpeed = 0;
+    }
 
     
     // Calculate the targetRPM
@@ -164,7 +140,6 @@ export async function POST(request: NextRequest){
     } 
    
 
-    // If the battery is charging, increase the battery level
     
 
     // If the battery is full, turn off charging
@@ -217,18 +192,6 @@ export async function POST(request: NextRequest){
     newBatteryTemp = Math.max(MIN_TEMP, Math.min(MAX_TEMP, newBatteryTemp));
 
 
-
-
-    
-
-
-    // Check engine triggers at critical temp
-    // if (newBatteryTemp >= 55) {
-    //     checkEngineStatus = true;
-    // } else {
-    //     checkEngineStatus = false;
-    // }
-
     // Gear Ratio
     if (motorSpeed === 0){
         gearRatio = "N/N";
@@ -241,17 +204,11 @@ export async function POST(request: NextRequest){
     }else if (motorSpeed === 4){
         gearRatio = "1/1";
     }
-
-    // Calculating the equivalent Power
-    // Assuming the following: 
-    // Power = (Torque x RPM) / 9550 , where 9550 is the conversion factor for mechanical power
-    // From the formula, we can calculate the torque at max power of 1000KW, as 11937.5Nm
-
     
     let newRPM  = Math.round(currentRPM * 100) / 100;
     newPower = Math.round(newPower * 100) / 100;
     
-    // Update the vehicle data
+    // Updating the Database with New Info
     const { data:updateData, error: updateError } = await supabase
     .from('vehicle')
     .update({
