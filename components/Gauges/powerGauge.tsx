@@ -66,9 +66,7 @@ export default function PowerGauge() {
                 { value: 100, valueConfig: { formatTextValue: () => "1000" } },
               ],
               defaultTickLineConfig: {
-                style: {
-                  display: "none",
-                },
+                width: 0,
               },
             },
           }}

@@ -65,9 +65,7 @@ export default function RPMGauge() {
                 { value: 100, valueConfig: { formatTextValue: () => "800" } }
               ],
               defaultTickLineConfig: {
-                style: {
-                  display: "none",
-                },
+                width: 0,
               },
             },
           }}
