@@ -65,12 +65,6 @@ export default function PowerGauge() {
                 { value: 87.5, valueConfig: { formatTextValue: () => "750" } },
                 { value: 100, valueConfig: { formatTextValue: () => "1000" } },
               ],
-              defaultTickValueConfig: {
-                style: {
-                  fontSize: "13px",
-                  fill: "#BFBFBF",
-                },
-              },
               defaultTickLineConfig: {
                 style: {
                   display: "none",
