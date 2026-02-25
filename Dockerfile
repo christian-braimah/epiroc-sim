@@ -8,6 +8,7 @@ RUN npm ci
 
 # Copy all source files and build
 COPY . .
+RUN mkdir -p public
 RUN npm run build
 
 FROM node:20-alpine AS runner
