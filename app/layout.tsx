@@ -10,9 +10,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Epiroc Sim",
   description: "Epiroc Sim",
-  icons:{
-    icon:"/favicon.png",
-  },
 };
 
 const gabarito = Gabarito({
