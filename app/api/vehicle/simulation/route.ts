@@ -192,22 +192,23 @@ export async function POST(request: NextRequest){
     newBatteryTemp = Math.max(MIN_TEMP, Math.min(MAX_TEMP, newBatteryTemp));
 
 
-    // Gear Ratio
-    if (motorSpeed === 0){
-        gearRatio = "N/N";
-    }else if (motorSpeed === 1){
-        gearRatio = "4/1";
-    }else if (motorSpeed === 2){
-        gearRatio = "3/1";
-    }else if (motorSpeed === 3){
-        gearRatio = "2/1";
-    }else if (motorSpeed === 4){
-        gearRatio = "1/1";
-    }
-    
+    // Rounding the RPM and Power
     let newRPM  = Math.round(currentRPM * 100) / 100;
     newPower = Math.round(newPower * 100) / 100;
     
+    // Gear Ratio
+    if (newRPM === 0){
+        gearRatio = "N/N";
+    }else if (newRPM >= 1 && newRPM <= 200){
+        gearRatio = "4/1";
+    }else if (newRPM >= 201 && newRPM <= 400){
+        gearRatio = "3/1";
+    }else if (newRPM >= 401 && newRPM <= 600){
+        gearRatio = "2/1";
+    }else if (newRPM >= 601 && newRPM <= 800){
+        gearRatio = "1/1";
+    }
+
     // Updating the Database with New Info
     const { data:updateData, error: updateError } = await supabase
     .from('vehicle')
