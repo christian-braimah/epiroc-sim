@@ -6,7 +6,6 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 export interface VehicleState {
   id: number;
   power_kw: number;
-  rpm: number;
   gear_ratio: string;
   battery_pct: number;
   battery_temp: number;
@@ -23,7 +22,7 @@ export interface VehicleState {
 interface VehicleContextValue {
   vehicleState: VehicleState | null; 
   setMotorSpeed: (speed: number) => Promise<void>;  // Update motor speed (0-4)
-  toggleCharging: () => Promise<void>;               // Toggle charging on/off
+  toggleCharging: () => Promise<void>; // Toggle charging on/off
 }
 
 // Create the context with null as default
@@ -47,10 +46,13 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Fetching vehicle state every second to update UI
+  // Also calls the simulation endpoint each tick to advance RPM, power, etc.
   useEffect(() => {
     fetchVehicleState();
 
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
+      // Run one simulation tick, then fetch the updated state
+      await fetch("/api/vehicle/simulation", { method: "POST" });
       fetchVehicleState();
     }, 1000);
 
