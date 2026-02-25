@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useVehicle } from "@/lib/VehicleContext";
 
 const speedOptions = ["OFF", "1", "2", "3", "4"];
 
-/**
- * MotorSpeedSetting — Interactive speed selector (item #11 in the dashboard spec).
- * Uses a native range input (0-4) with labels below. Styled via CSS to match the dashboard.
- */
+
 export default function MotorSpeedSetting() {
-  const [selected, setSelected] = useState(0);
+  const { vehicleState, setMotorSpeed } = useVehicle();
+  const selected = vehicleState?.motor_speed ?? 0;
+
+  const handleChange = (newSpeed: number) => {
+    setMotorSpeed(newSpeed); // Sends POST to /api/vehicle/control
+  };
 
   return (
     <div className="motor-speed-settings">
@@ -19,7 +21,7 @@ export default function MotorSpeedSetting() {
         max={4}
         step={1}
         value={selected}
-        onChange={(e) => setSelected(Number(e.target.value))}
+        onChange={(e) => handleChange(Number(e.target.value))}
         className="motor-speed-slider"
       />
       {/* Speed labels below the slider */}
@@ -28,7 +30,7 @@ export default function MotorSpeedSetting() {
           <button
             key={label}
             className={`motor-speed-label ${selected === index ? "motor-speed-label--active" : ""}`}
-            onClick={() => setSelected(index)}
+            onClick={() => handleChange(index)}
           >
             {label}
           </button>

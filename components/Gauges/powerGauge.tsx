@@ -1,25 +1,22 @@
 "use client";
-import {useState, useEffect} from "react";
+
+import { useVehicle } from "@/lib/VehicleContext";
 import GaugeComponent from "react-gauge-component";
-import React from "react";
 
 
 export default function PowerGauge() {
- const [value, setValue] = useState(0);
-  useEffect(() => {
-    const values = [-1000, -500, 0, 500,750, 1000];
-    let i = 0;
 
-    const interval = setInterval(() => {
-      i = (i + 1) % values.length;
-      setValue(values[i]);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  const { vehicleState } = useVehicle();
+  const value = vehicleState?.power_kw ?? 0;
+
+//   Color Ranges
+  const extremeRangeColor = "#FF0000";
+  const safeRangeColor = "#00FF00";
+  const defaultRangeColor = "#dddddd";
+
 
   return (
-    <div
-    >
+    <div>
       <div className="gauge-section">
         <GaugeComponent
           type="radial"
@@ -30,8 +27,11 @@ export default function PowerGauge() {
             width: 0.1,
             padding: 0,
             emptyColor: "#3a3a40",
-            colorArray: ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#171722ff", "#4B0082", "#8B00FF"],
-            colorArrayThresholds: [-1000, -500, 0, 500,750, 1000],
+            subArcs: [
+              { limit: 25, color: defaultRangeColor },
+              { limit: 87.5, color: safeRangeColor },
+              { limit: 100, color: extremeRangeColor },
+            ],
           }}
           pointer={{
             type: "needle",
@@ -85,9 +85,9 @@ export default function PowerGauge() {
       {/* Unit label */}
       <div
         style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           color: "#888890",
           fontSize: 24,
           marginTop: -60,
@@ -96,7 +96,6 @@ export default function PowerGauge() {
       >
         kW
       </div>
-
     </div>
-  )
+  );
 }
