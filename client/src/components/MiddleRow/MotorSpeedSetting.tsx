@@ -1,13 +1,16 @@
-import { useState } from "react";
+"use client";
+
+import { useVehicle } from "@/context/VehicleContext";
 
 const speedOptions = ["OFF", "1", "2", "3", "4"];
 
+
 export default function MotorSpeedSetting() {
-  // Static local state for now — will be wired to backend later
-  const [selected, setSelected] = useState(0);
+  const { vehicleState, setMotorSpeed } = useVehicle();
+  const selected = vehicleState?.motor_speed_setting ?? 0;
 
   const handleChange = (newSpeed: number) => {
-    setSelected(newSpeed);
+    setMotorSpeed(newSpeed); // Sends POST to /api/vehicle/control
   };
 
   return (

@@ -1,3 +1,8 @@
+"use client";
+
+// Importing Vehicle Data
+import { useVehicle } from "@/context/VehicleContext";
+
 // Importing Icons
 import ChargingButton from "@/assets/bottomRowIcons/chargingButton";
 import ViewMenu from "@/assets/bottomRowIcons/viewMenu";
@@ -10,8 +15,7 @@ const defaultColor = "#DDDDDD";
 const chargingColor = "#00FF00";
 
 export default function BottomRow() {
-    // Static values for now — will be wired to backend later
-    const isCharging = false;
+    const { vehicleState, toggleCharging } = useVehicle();
 
     const leftBottomRowIcons = [
         {
@@ -33,6 +37,7 @@ export default function BottomRow() {
 
     return (
         <section className="bottom-row">
+
             <div className="bottom-row__left">
                 {leftBottomRowIcons.map((icon) => (
                     <div key={icon.id} className="btn btn-bottom">
@@ -41,18 +46,21 @@ export default function BottomRow() {
                 ))}
             </div>
 
+
             <div className="bottom-row__middle">
                 <div className="btn btn-bottom middle">
                     <ViewMenu color={defaultColor}/>
                 </div>
             </div>
 
+
             <div className="bottom-row__right">
                 <div
                     className="btn btn-bottom"
+                    onClick={toggleCharging}
                     style={{ cursor: "pointer" }}
                 >
-                    <ChargingButton color={isCharging ? chargingColor : defaultColor} />
+                    <ChargingButton color={vehicleState?.is_charging ? chargingColor : defaultColor} />
                 </div>
             </div>
         </section>

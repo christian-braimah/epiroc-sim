@@ -1,44 +1,43 @@
+import { useVehicle } from "../../context/VehicleContext";
 import BatteryLowIndicator from "@/assets/topRowIcons/batteryLowIndicator";
 import CheckEngine from "@/assets/topRowIcons/checkEngine";
 import MotorStatus from "@/assets/topRowIcons/motorStatus";
 import ParkingBrake from "@/assets/topRowIcons/parkingBrake";
 
 // Setting up colors for icons
-const defaultColor = "#DDDDDD";
-const warningColor = "#FF0000";
+const defaultColor = "#DDDDDD";  
+const warningColor = "#FF0000";   
 
 export default function TopRow() {
-    // Static values for now — will be wired to backend later
-    const parkingBrake = false;
-    const checkEngine = false;
-    const motorStatus = false;
-    const batteryLow = false;
+    const { vehicleState } = useVehicle();
 
+    // Top Row Icons in an Array
     const topRowIcons = [
         {
             id: 1,
             name: "Parking Brake",
-            icon: <ParkingBrake color={parkingBrake ? warningColor : defaultColor} />
+            icon: <ParkingBrake color={vehicleState?.parking_brake ? warningColor : defaultColor} />
         },
         {
             id: 2,
             name: "Check Engine",
-            icon: <CheckEngine color={checkEngine ? warningColor : defaultColor} />
+            icon: <CheckEngine color={vehicleState?.check_engine ? warningColor : defaultColor} />
         },
         {
-            id: 3,
+             id: 3,
             name: "Motor Status",
-            icon: <MotorStatus color={motorStatus ? warningColor : defaultColor} />
+            icon: <MotorStatus color={vehicleState?.motor_status ? warningColor : defaultColor} />
+            
         },
         {
-            id: 4,
+           id: 4,
             name: "Battery Low Indicator",
-            icon: <BatteryLowIndicator color={batteryLow ? warningColor : defaultColor} />
+            icon: <BatteryLowIndicator color={vehicleState?.battery_low ? warningColor : defaultColor} />
         }
     ];
 
     return (
-        <section className="top-row">
+        <section className="top-row flex gap-4 items-center">
             {topRowIcons.map((icon) => (
                 <div key={icon.id} className="btn btn-top">
                     {icon.icon}
