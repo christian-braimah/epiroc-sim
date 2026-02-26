@@ -15,12 +15,16 @@ dotenv.config();
 
 
 // Allow requests from the client
-const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const allowedOrigins = [
+    "http://localhost:5173", 
+    "http://localhost:3000",
+    "http://localhost:4000"
+];
 
 // CORS configuration
 app.use(cors({
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS"));
