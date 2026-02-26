@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 // Import routes
-import vehicleStatusRouter from "./routes/status.js";
+import vehicleRouter from "./routes/vehicle.js";
 import controlRouter from "./routes/control.js";
 import simulationRouter from "./routes/simulation.js";
 
@@ -34,10 +34,12 @@ app.get("/", (req, res) => {
     res.send({message: "API is running!"});
 });
 
+app.use(express.json());
+
 // API routes
-app.use("/api/status", vehicleStatusRouter);
-app.use("/api/control", controlRouter);
-app.use("/api/simulation", simulationRouter);
+app.use("/vehicle", vehicleRouter); // fetches all vehicle data
+app.use("/control", controlRouter); // posts the current motor speed setting
+app.use("/simulation", simulationRouter); // handles simulation logic
 
 
 // Listening for 
