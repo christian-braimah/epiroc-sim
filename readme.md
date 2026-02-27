@@ -4,6 +4,11 @@ A real-time electric mining vehicle dashboard simulator built for the Epiroc EAE
 
 **Live Demo:** [http://3.145.89.180](http://3.145.89.180)
 
+
+
+<img width="1604" height="1077" alt="Screenshot 2026-02-27 at 09 06 11" src="https://github.com/user-attachments/assets/4ad1dd5f-1d93-4e64-bc27-c0a5af8b832b" />
+
+
 ---
 
 ## Tech Stack
