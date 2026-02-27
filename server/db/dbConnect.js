@@ -8,6 +8,9 @@ dotenv.config();
 // Initialize pg-promise
 const pgp = pgPromise({});
 
+// Parse NUMERIC (OID 1700) as float instead of string
+pgp.pg.types.setTypeParser(1700, (val) => parseFloat(val));
+
 // Creating database connection
 const db = pgp({
     connectionString: process.env.RDS_DATABASE_URL,

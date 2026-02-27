@@ -1,5 +1,3 @@
-"use client";
-
 // Importing Vehicle Data
 import { useVehicle } from "@/context/VehicleContext";
 

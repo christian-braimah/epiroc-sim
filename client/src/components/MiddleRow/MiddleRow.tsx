@@ -1,5 +1,3 @@
-"use client";
-
 import { useVehicle } from "@/context/VehicleContext";
 import GearRatio from "@/assets/middleRowIcons/gearRatio";
 import BatteryPercentage from "@/assets/middleRowIcons/batteryPercentage";

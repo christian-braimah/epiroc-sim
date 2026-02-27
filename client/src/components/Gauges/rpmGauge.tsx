@@ -1,8 +1,11 @@
 import GaugeComponent from "react-gauge-component";
+import { useVehicle } from "../../context/VehicleContext";
 
 export default function RPMGauge() {
+  const vehicleData: any = useVehicle();
+
   // Static value for now — will be wired to backend later
-  const value = 0;
+  const value = vehicleData.vehicleState?.motor_rpm ?? 0;
 
   // Specifying Range Colors
   const extremeRangeColor = "#FF0000";
@@ -29,6 +32,7 @@ export default function RPMGauge() {
           }}
           pointer={{
             type: "needle",
+            color: "#FFFFFF",
             length: 0.6,
             width: 10,
             animate: true,
@@ -63,11 +67,6 @@ export default function RPMGauge() {
                 style: {
                   fontSize: "13px",
                   fill: "#BFBFBF",
-                },
-              },
-              defaultTickLineConfig: {
-                style: {
-                  display: "none",
                 },
               },
             },

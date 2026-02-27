@@ -1,8 +1,12 @@
 import GaugeComponent from "react-gauge-component";
+import { useState, useEffect } from "react";
+import { useVehicle } from "../../context/VehicleContext";
 
 export default function PowerGauge() {
+  const vehicleData = useVehicle();
+
   // Static value for now — will be wired to backend later
-  const value = 0;
+  const value = vehicleData.vehicleState?.power_kw ?? 0;
 
   // Specifying Range Colors
   const extremeRangeColor = "#FF0000";
@@ -29,6 +33,7 @@ export default function PowerGauge() {
           }}
           pointer={{
             type: "needle",
+            color: "#FFFFFF",
             length: 0.6,
             width: 10,
             animate: true,
@@ -63,11 +68,6 @@ export default function PowerGauge() {
                 style: {
                   fontSize: "13px",
                   fill: "#BFBFBF",
-                },
-              },
-              defaultTickLineConfig: {
-                style: {
-                  display: "none",
                 },
               },
             },
