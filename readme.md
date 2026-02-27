@@ -56,18 +56,18 @@ epiroc-sim/
 │
 ├── server/                          # Express backend
 │   ├── controllers/
-│   │   ├── simulationController.js  # Physics engine
-│   │   ├── motorController.js       # Motor speed updates
-│   │   └── chargingController.js    # Charging toggle
+│   │   ├── simulationController.js  # Simulation Logic
+│   │   ├── motorController.js       # Motor speed controller
+│   │   └── chargingController.js    # Charging toggle controller
 │   ├── routes/
 │   │   ├── vehicle.js               # GET vehicle state
 │   │   ├── control.js               # POST motor & charging
 │   │   └── simulation.js            # POST simulation tick
 │   ├── db/
 │   │   ├── dbConnect.js             # PostgreSQL connection
-│   │   └── vehicle.sql              # Schema & seed data
+│   │   └── vehicle.sql              # Database Schema & seed data
 │   ├── server.js                    # Express app entry point
-│   ├── Dockerfile
+│   ├── Dockerfile                   # Docker image build
 │   ├── deploy.sh                    # One-command EC2 deployment
 │   └── package.json
 │
@@ -78,9 +78,8 @@ epiroc-sim/
 
 ## Prerequisites
 
-- **Node.js** 20+
-- **PostgreSQL** 14+ (local or remote)
-- **Docker** (optional, for deployment)
+- **Node.js** 
+- **PostgreSQL**  
 
 ---
 
@@ -123,7 +122,9 @@ Start the server:
 npm start
 ```
 
-The API will be running at `http://localhost:4000`.
+Yo will get the following response : 
+
+    The API will be running at `http://localhost:4000`.
 
 ### 4. Set Up the Frontend
 
@@ -155,17 +156,17 @@ The dashboard will be available at `http://localhost:5173`.
 | GET | `/vehicle` | Fetch current vehicle state |
 | POST | `/control/motor` | Update motor speed setting (0-4) |
 | POST | `/control/charging` | Toggle charging on/off |
-| POST | `/simulation` | Execute one simulation tick |
+| POST | `/simulation` | Executes one simulation tick |
 
-### Request Examples
+### For Examples
 
-**Set motor speed to 3:**
+**Whaen you set motor speed to 3:**
 ```json
 POST /control/motor
 { "motor_speed_setting": 3 }
 ```
 
-**Toggle charging on:**
+**When you toggele charging on:**
 ```json
 POST /control/charging
 { "is_charging": true }
@@ -175,27 +176,44 @@ POST /control/charging
 
 ## Simulation Logic
 
-The simulation engine runs every 1 second (client-driven polling) and models the following vehicle physics:
+The simulation engine is called every 1 second and has the following vehicle physics:
 
 ### Motor & RPM
-- **Speed settings** 0-4 map to target RPMs: 0, 200, 400, 600, 800
-- RPM ramps at **66.67 RPM/tick** (takes ~12 seconds to reach max)
+- **Speed settings** 0-4 are mapped to these target RPMs: 0, 200, 400, 600, 800
+- To prevent instant acceleration, RPM ramps gradually:
+        RPM Step = 800 RPM / 12 seconds = 66.67 RPM per tick
+        So 12s to max RPM. The same for deceleration.
 - Motor status indicator activates at RPM >= 700
 
 ### Power Calculation
 - `Power (kW) = (Torque × RPM) / 9550`
-- Max torque: 11,937.5 Nm at 800 RPM
+- Where 9550 is the mechanical conversion factor (kW to Nm at RPM).
+- Max torque: 11,937.5 Nm at 800 RPM _(Torque(Max) = (1000 x 9550) / 800 = 11,937.5 Nm)_
 - Regenerative braking applies at 50% during deceleration
 
 ### Battery
+Battery drains based on the power output. Assuming the battery drains in 1 minute at Max Power:
+`Battery Drain Per Tick = DRAIN_CONSTANT x Power
+ DRAIN_CONSTANT = (100% / 60s) / 1000kW = 0.001667`
+ 
 - **Drain rate:** 0.001667% per kW per second
+- 
+  When charging is active:
+  The motor is turned off, and it charges at the same rate in 1 minute.
+  
 - **Charge rate:** 1.667% per second (~60 seconds for full charge)
 - **Battery low** indicator at <= 20%, auto-shutdown at 0%
+- `P(regen) = -0.5 x (Torque x RPM) / 9550`
 
 ### Temperature
-- Base temperature: 20°C
+It is assumed that the battery heats from 20 to 60 degrees in 1 minute to get the heat rate.
+
+- Base temperature: 20°C and is proportional to the power output.
 - Heats at 0.000667°C per kW, cools at 0.667°C/sec when idle
+   `HEAT_RATE = 40 / (60s x 1000kW) = 0.000667
+    Temp(new) = Temp(current) + |Power| x HEAT_RATE`
 - **Check engine** indicator triggers at >= 50°C
+- Cooling implemented when the motor is off, and cools from 60 degrees to 20 degrees C in 1 minute.
 
 ### Gear Ratios
 | Speed Setting | Gear Ratio |
