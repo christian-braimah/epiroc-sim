@@ -68,9 +68,10 @@ const MAX_TEMP = 60;
 
 const simulationController = async (req, res) => {
     try{
-        
+        // Fetching the current state of the vehicle
         const state = await db.one("SELECT * FROM vehicle WHERE id = $1", [1]);
 
+        // Initializing the current state of the vehicle
         let motorSpeed = state.motor_speed_setting;
         let isCharging = state.is_charging;
         let batteryLevel = state.battery_pct;
@@ -116,10 +117,10 @@ const simulationController = async (req, res) => {
 
         newPower = Math.round(newPower * 100) / 100;
 
+        // Initializing the new Battery Level
+        let newBatteryLevel = batteryLevel;
 
-        let newBatteryLevel =batteryLevel;
-
-
+        // Updating the Battery Level
         if (isCharging){
             newBatteryLevel += CHARGE_RATE_PER_SECOND;
         }else{
@@ -127,32 +128,34 @@ const simulationController = async (req, res) => {
         } 
 
         // If the battery is full, turn off charging
-    if (newBatteryLevel >= 100){
-        isCharging = false;
-        newBatteryLevel = 100;
-    }
+        if (newBatteryLevel >= 100){
+            isCharging = false;
+            newBatteryLevel = 100;
+        }
 
-    // If the battery is empty, turn off the motor
-    if (newBatteryLevel <= 0) {
-        newBatteryLevel = 0;
-        currentRPM = 0;   
-        motorSpeed = 0;   
-        newPower = 0;     
-    }
+        // If the battery is empty, turn off the motor
+        if (newBatteryLevel <= 0) {
+            newBatteryLevel = 0;
+            currentRPM = 0;   
+            motorSpeed = 0;   
+            newPower = 0;     
+        }
 
-    if(newBatteryLevel <=0){
-        batteryLowStatus = true;
-        parkingBrakeStatus = true;
-    }else if(newBatteryLevel <=20){
-        batteryLowStatus = true;
-    }else{
-        batteryLowStatus = false;
-        parkingBrakeStatus = false;
-    }
+        // Updating the Battery Low Status
+        if(newBatteryLevel <=0){
+            batteryLowStatus = true;
+            parkingBrakeStatus = true;
+        }else if(newBatteryLevel <=20){
+            batteryLowStatus = true;
+        }else{
+            batteryLowStatus = false;
+            parkingBrakeStatus = false;
+        }
 
-    if (currentRPM >= 700){
-        motorStatus = true;
-    }else{
+        // Updating the Motor Status
+        if (currentRPM >= 700){
+            motorStatus = true;
+        }else{
         motorStatus = false;
     }
 
@@ -194,9 +197,9 @@ const simulationController = async (req, res) => {
 
 
 
-
-       const result = await db.one(
-    `UPDATE vehicle SET
+    // Updating the database
+    const result = await db.one(
+        `UPDATE vehicle SET
         motor_speed_setting = $1,
         motor_rpm = $2,
         power_kw = $3,
@@ -208,7 +211,7 @@ const simulationController = async (req, res) => {
         parking_brake = $9,
         motor_status = $10,
         is_charging = $11
-    WHERE id = $12 RETURNING *`,
+        WHERE id = $12 RETURNING *`,
     [
         motorSpeed,
         newRPM,
@@ -221,11 +224,10 @@ const simulationController = async (req, res) => {
         parkingBrakeStatus,
         motorStatus,
         isCharging,
-        1
-    ]
-);
+        1]
+    );
 
-        res.json(result);
+    res.json(result);
 
     }catch(err){
         console.error("Error updating motor speed setting:", err);

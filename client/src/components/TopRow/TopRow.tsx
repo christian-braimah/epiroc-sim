@@ -37,7 +37,7 @@ export default function TopRow() {
     ];
 
     return (
-        <section className="top-row flex gap-4 items-center">
+        <section className="top-row">
             {topRowIcons.map((icon) => (
                 <div key={icon.id} className="btn btn-top">
                     {icon.icon}

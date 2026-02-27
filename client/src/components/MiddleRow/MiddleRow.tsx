@@ -49,7 +49,7 @@ export default function MiddleRow() {
                 {middleRowIcons.map((icon) => (
                     <div key={icon.id} className="btn btn-middle">
                         {icon.icon}
-                        <div className="flex flex-col items-center">
+                        <div className="metric-values">
                             <p className="middle-row__value">{icon.value}</p>
                             <p className="middle-row__unit">{icon.unit}</p>
                         </div>
