@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap');
+/* Global Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: #000;
+    color: #fff;
+    font-family: 'Gabarito', sans-serif;
+}
+
+.top-row{
+    background-color: #151515;
+    padding: 0.1rem;
+    flex-flow: row wrap;
+
+}
+
+.middle-row{
+    background-color: #151515;
+    padding: 0.1rem;
+    display: flex;
+}
+.middle-row__left{
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.2rem;
+}
+.bottom-row{
+    background-color: #151515;
+    padding: 0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bottom-row__left{
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.1rem;
+}
+
+.btn{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn.btn-top{
+   background-color: #151515;
+   min-width: 105.29px;
+   aspect-ratio: 1 / 1;
+}
+
+.btn.btn-bottom, .btn.btn-middle{
+    display: flex;
+   flex-direction: column;
+    padding: 2rem;
+    aspect-ratio: 1.15 / 1;
+    justify-content: center;
+    align-items: center;
+    gap: 10.71px;
+    border-radius: 6.426px;
+border: 1.071px solid #2F2F2F;
+background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64%);
+    
+}
+.btn.btn-bottom.middle{
+    background: linear-gradient(180deg, #363636 0.41%, #272727 59.09%, #272727 99.64%), #333;
+
+}
+.btn.btn-middle{
+    padding: 1rem;
+}
+
+.middle-row__value{
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #DDDDDD;
+}
+.middle-row__unit{
+    font-size: 1rem;
+    font-weight: 900;
+    color: #DDDDDD;
+}
+.middle-row__right{
+    display: flex;
+    flex-flow: column wrap;
+    gap: 0.5rem;
+    padding: 0.1rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+    h2{
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #DDDDDD;
+        text-transform: uppercase;
+    }
+}
+
+/* Motor Speed Setting — native range slider styled for dark theme */
+.motor-speed-settings{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 600px;
+    padding: 1rem;
+}
+
+/* Range input — track styling */
+.motor-speed-slider{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #555;
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Thumb — WebKit (Chrome, Safari, Edge) */
+.motor-speed-slider::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    background: #1A1A1A;
+    border: 2px solid #888;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Thumb — Firefox */
+.motor-speed-slider::-moz-range-thumb{
+    width: 28px;
+    height: 28px;
+    background: #1A1A1A;
+    border: 2px solid #888;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.motor-speed-labels{
+    display: flex;
+    justify-content: space-between;
+}
+
+.motor-speed-label{
+    flex: 1;
+    padding: 0.3rem 0;
+    background: transparent;
+    color: #888;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.2s ease;
+}
+
+.motor-speed-label:hover{
+    color: #DDDDDD;
+}
+
+.motor-speed-label--active{
+    color: #fff;
+}
+
+.gauge-section{
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    padding: 0.1rem;
+
+    @media (max-width: 768px) {
+        flex-flow: column wrap;
+        height: auto;
+    }
+}
+
+/* Tailwind replacements */
+.dashboard{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100vh;
+}
+
+.top-row{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.metric-values{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
