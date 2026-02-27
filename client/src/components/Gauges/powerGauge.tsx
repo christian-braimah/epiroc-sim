@@ -5,12 +5,12 @@ import { useVehicle } from "../../context/VehicleContext";
 export default function PowerGauge() {
   const vehicleData = useVehicle();
 
-  // Static value for now — will be wired to backend later
+  // Value from backend
   const value = vehicleData.vehicleState?.power_kw ?? 0;
 
   // Specifying Range Colors
+  const regenRangeColor = "#00FF00";
   const extremeRangeColor = "#FF0000";
-  const safeRangeColor = "#00FF00";
   const defaultRangeColor = "#dddddd";
 
   return (
@@ -26,8 +26,8 @@ export default function PowerGauge() {
             padding: 0,
             emptyColor: "#3a3a40",
             subArcs: [
-              { limit: 25, color: defaultRangeColor },
-              { limit: 87.5, color: safeRangeColor },
+              { limit: 50, color: regenRangeColor },
+              { limit: 87.5, color: defaultRangeColor },
               { limit: 100, color: extremeRangeColor },
             ],
           }}

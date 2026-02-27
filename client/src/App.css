@@ -1,5 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap');
-/* Global Reset */
+
+.dashboard{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100vh;
+}
+
+.top-row{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.metric-values{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -103,7 +122,7 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     }
 }
 
-/* Motor Speed Setting — native range slider styled for dark theme */
+
 .motor-speed-settings{
     display: flex;
     flex-direction: column;
@@ -114,7 +133,7 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     padding: 1rem;
 }
 
-/* Range input — track styling */
+
 .motor-speed-slider{
     -webkit-appearance: none;
     appearance: none;
@@ -126,7 +145,7 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     cursor: pointer;
 }
 
-/* Thumb — WebKit (Chrome, Safari, Edge) */
+
 .motor-speed-slider::-webkit-slider-thumb{
     -webkit-appearance: none;
     appearance: none;
@@ -138,7 +157,7 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     cursor: pointer;
 }
 
-/* Thumb — Firefox */
+
 .motor-speed-slider::-moz-range-thumb{
     width: 28px;
     height: 28px;
@@ -189,22 +208,5 @@ background: linear-gradient(180deg, #272727 0.41%, #1A1A1A 75.31%, #1A1A1A 99.64
     }
 }
 
-/* Tailwind replacements */
-.dashboard{
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    height: 100vh;
-}
 
-.top-row{
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
 
-.metric-values{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}

@@ -27,7 +27,7 @@ interface VehicleContextValue {
 // Create the context with null as default
 const VehicleContext = createContext<VehicleContextValue | null>(null);
 
-// VehicleProvider wraps the dashboard and provides vehicle data to all children
+// VehicleProvider wrapping dashboard and providing vehicle data to all children
 export function VehicleProvider({ children }: { children: React.ReactNode }) {
   const [vehicleState, setVehicleState] = useState<VehicleState | null>(null);
 
@@ -81,10 +81,7 @@ export function VehicleProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-/**
- * useVehicle — hook for child components to access vehicle state and actions.
- * Must be used inside a <VehicleProvider>.
- */
+// useVehicle — hook for child components to access vehicle data
 export function useVehicle() {
   const content = useContext(VehicleContext);
   if (!content) throw new Error("useVehicle must be used within a VehicleProvider");

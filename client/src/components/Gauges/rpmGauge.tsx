@@ -4,7 +4,7 @@ import { useVehicle } from "../../context/VehicleContext";
 export default function RPMGauge() {
   const vehicleData: any = useVehicle();
 
-  // Static value for now — will be wired to backend later
+  // Value from backend
   const value = vehicleData.vehicleState?.motor_rpm ?? 0;
 
   // Specifying Range Colors

@@ -6,6 +6,7 @@ import { VehicleProvider } from "../context/VehicleContext";
 
 export default function Dashboard() {
     return (
+        // VehicleProvider provides the vehicle state to all components
         <VehicleProvider>
             <div className="dashboard">
                 <TopRow />
