@@ -165,13 +165,13 @@ The dashboard will be available at `http://localhost:5173`.
 
 ### For Examples
 
-**Whaen you set motor speed to 3:**
+**When you set motor speed to 3:**
 ```json
 POST /control/motor
 { "motor_speed_setting": 3 }
 ```
 
-**When you toggele charging on:**
+**When you toggle charging on:**
 ```json
 POST /control/charging
 { "is_charging": true }

@@ -1,6 +1,7 @@
 import db from "../db/dbConnect.js";
 
 /*
+The logic behind the simulation is as follows:
 1. MOTOR
     OFF - 0 RPM, 1 - 200 RPM, 2 - 400 RPM, 3 - 600 RPM, 4 - 800 RPM
 
@@ -86,8 +87,12 @@ const simulationController = async (req, res) => {
         // Turn off Motor when charging
         if (isCharging === true && motorSpeed > 0){
             motorSpeed = 0;
-        }else if (motorSpeed > 0 && isCharging === true){
-            isCharging = false;
+        }
+
+        // Block motor from starting while parking brake is engaged (battery died)
+        // Motor stays off until battery is recharged to 20%
+        if (parkingBrakeStatus === true && motorSpeed > 0){
+            motorSpeed = 0;
         }
 
         // Calculate the targetRPM
@@ -102,6 +107,7 @@ const simulationController = async (req, res) => {
             currentRPM = Math.max(currentRPM - RPM_STEP, targetRPM);
         }
 
+        // Check if the vehicle is decelerating
         const isDecelerating = currentRPM < state.motor_rpm;
 
         let newPower;
@@ -141,12 +147,15 @@ const simulationController = async (req, res) => {
             newPower = 0;     
         }
 
-        // Updating the Battery Low Status
-        if(newBatteryLevel <=0){
+        // Updating the Battery Low Status and Parking Brake
+        // Parking brake engages when battery dies (0%) and stays on until recharged to 20%
+        if(newBatteryLevel <= 0){
             batteryLowStatus = true;
             parkingBrakeStatus = true;
-        }else if(newBatteryLevel <=20){
+        }else if(newBatteryLevel <= 20){
             batteryLowStatus = true;
+            // Keep parking brake ON if it was already engaged (from hitting 0%)
+            // Only disengages once battery is above 20%
         }else{
             batteryLowStatus = false;
             parkingBrakeStatus = false;
@@ -162,7 +171,9 @@ const simulationController = async (req, res) => {
     // Battery Temperature
     let newBatteryTemp = batteryTemp;
     let absolutePower = Math.abs(newPower);
-    
+
+
+    // Battery Temperature Logic
     if(absolutePower>0){
         newBatteryTemp = newBatteryTemp + (absolutePower * HEAT_RATE);
     }else{
@@ -192,9 +203,9 @@ const simulationController = async (req, res) => {
         gearRatio = "1/1";
     }
 
+    // Rounding gauge values to 2 decimal places
     let newRPM  = Math.round(currentRPM * 100) / 100;
     newPower = Math.round(newPower * 100) / 100;
-
 
 
     // Updating the database

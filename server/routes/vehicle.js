@@ -3,6 +3,7 @@ import db from "../db/dbConnect.js";
 
 const vehicleRouter = express.Router();
 
+// Fetches the current status of the vehicle
 vehicleRouter.get("/", async (req, res) => {
     try{
         const result = await db.one("SELECT * FROM vehicle WHERE id = $1", [1]);

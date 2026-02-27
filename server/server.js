@@ -17,10 +17,8 @@ dotenv.config();
 // Allow requests from the client
 const allowedOrigins = [
     "http://localhost:5173", 
-    "http://localhost:3000",
     "http://localhost:4000",
-    "http://epiroc-sim-frontend.s3-website.us-east-2.amazonaws.com",
-    "http://3.145.89.180"
+    "http://3.145.89.180" // Live demo
 ];
 
 // CORS configuration
