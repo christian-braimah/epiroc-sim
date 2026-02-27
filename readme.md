@@ -107,6 +107,12 @@ psql -U <your_user> -d <your_database> -f server/db/vehicle.sql
 
 This creates the `vehicle` table and inserts an initial row with default values.
 
+To read the data use the read-only link below: 
+
+```
+psql "postgresql://chris:chris2163@epirog-sim-db.cbm2smqaspq8.us-east-2.rds.amazonaws.com:5432/postgres" 
+```
+
 ### 3. Set Up the Backend
 
 ```bash
